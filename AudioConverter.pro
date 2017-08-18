@@ -13,8 +13,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    converterwizard.cpp \
+startpage.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    converterwizard.h \
+    startpage.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+startpage.ui
+
+TRANSLATIONS += audioconverter.ts
