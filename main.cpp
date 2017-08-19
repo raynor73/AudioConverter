@@ -1,29 +1,27 @@
 #include <QApplication>
+#include <QLibraryInfo>
+#include <QTranslator>
 #include "converterwizard.h"
 
 int main(int argc, char *argv[])
 {
-	QApplication a(argc, argv);
+	QApplication app(argc, argv);
+
+	QCoreApplication::setOrganizationName("Lapin Soft");
+	QCoreApplication::setApplicationName("Audio Converter");
 
 #ifndef QT_NO_TRANSLATION
-	QString translatorFileName = QLatin1String("qt_");
-	translatorFileName += QLocale::system().name();
-	QTranslator *translator = new QTranslator(&app);
-	if (translator->load(translatorFileName, QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
-		app.installTranslator(translator);
-#endif
-
-	/*QTranslator qtTranslator;
-		qtTranslator.load("qt_" + QLocale::system().name(),
-				QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+	QTranslator qtTranslator;
+	if (qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath)))
 		app.installTranslator(&qtTranslator);
 
-		QTranslator myappTranslator;
-		myappTranslator.load("myapp_" + QLocale::system().name());
-		app.installTranslator(&myappTranslator);*/
+	QTranslator appTranslator;
+	if (appTranslator.load("myapp_" + QLocale::system().name()))
+		app.installTranslator(&appTranslator);
+#endif
 
 	ConverterWizard wizard;
 	wizard.show();
 
-	return a.exec();
+	return app.exec();
 }

@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     converterwizard.cpp \
-startpage.cpp
+startpage.cpp \
+    converterwizardviewmodel.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
-    startpage.h
+    startpage.h \
+    converterwizardviewmodel.h
 
 FORMS    += mainwindow.ui \
 startpage.ui

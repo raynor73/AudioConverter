@@ -3,6 +3,7 @@
 
 #include <QWizardPage>
 #include <QSettings>
+#include "converterwizardviewmodel.h"
 
 namespace Ui {
 class StartPage;
@@ -13,12 +14,13 @@ class StartPage : public QWizardPage
 	Q_OBJECT
 
 public:
-	explicit StartPage(QWidget *parent = 0);
+	StartPage(ConverterWizardViewModel &wizardViewModel, QWidget *parent = 0);
 	~StartPage();
 
 private:
-	QSettings m_settings;
 	Ui::StartPage *m_ui;
+	ConverterWizardViewModel &m_wizardViewModel;
+	QSettings m_settings;
 };
 
 #endif // STARTPAGE_H
