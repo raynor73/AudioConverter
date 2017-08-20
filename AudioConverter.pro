@@ -16,14 +16,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     converterwizard.cpp \
 startpage.cpp \
-    converterwizardviewmodel.cpp
+    converterwizardviewmodel.cpp \
+    filesselectionpage.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
     startpage.h \
-    converterwizardviewmodel.h
+    converterwizardviewmodel.h \
+    filesselectionpage.h
 
 FORMS    += mainwindow.ui \
-startpage.ui
+startpage.ui \
+    filesselectionpage.ui
 
 TRANSLATIONS += audioconverter.ts

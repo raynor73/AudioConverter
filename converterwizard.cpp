@@ -1,12 +1,14 @@
 #include "converterwizard.h"
 #include <QCoreApplication>
 #include "startpage.h"
+#include "filesselectionpage.h"
 
 const QString ConverterWizard::WIZARD_WINDOW_POSITION_KEY = "wizard/position";
 
 ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
 {
 	addPage(new StartPage(m_viewModel));
+	addPage(new FilesSelectionPage(m_viewModel));
 
 #ifndef Q_OS_MAC
 	setWizardStyle(ModernStyle);
