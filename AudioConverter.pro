@@ -18,14 +18,18 @@ SOURCES += main.cpp\
 startpage.cpp \
     converterwizardviewmodel.cpp \
     filesselectionpage.cpp \
-    wavsettingspage.cpp
+    wavsettingspage.cpp \
+    riffreader/riffreader.cpp \
+    riffreader/riffchunkheader.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
     startpage.h \
     converterwizardviewmodel.h \
     filesselectionpage.h \
-    wavsettingspage.h
+    wavsettingspage.h \
+    riffreader/riffreader.h \
+    riffreader/riffchunkheader.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \
@@ -33,3 +37,5 @@ startpage.ui \
     wavsettingspage.ui
 
 TRANSLATIONS += audioconverter.ts
+
+INCLUDEPATH += riffreader
