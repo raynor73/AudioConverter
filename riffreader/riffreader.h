@@ -16,6 +16,7 @@ public:
 	RiffReader(QIODevice &ioDevice, QObject *parent = 0);
 
 	RiffChunkHeader chunkHeader() const { return m_currentChunkHeader; }
+	QString subIdentifier() const { return QString::fromLatin1(m_subIdentifier, sizeof(m_subIdentifier)); }
 	ChunkReadResult nextChunk();
 	quint32 readData(char *buffer, quint32 size);
 

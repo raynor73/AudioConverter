@@ -38,6 +38,8 @@ RiffReader::ChunkReadResult RiffReader::nextChunk()
 	qDebug() << TAG << "Identifier:" << m_currentChunkHeader.identifier();
 	qDebug() << TAG << "Data length:" << m_currentChunkHeader.dataLength();
 
+	m_availableDataLeft = m_currentChunkHeader.dataLength();
+
 	if (m_currentChunkHeader.identifier() == RiffChunkHeader::RIFF_IDENTIFIER ||
 			m_currentChunkHeader.identifier() == RiffChunkHeader::LIST_IDENTIFIER) {
 		if ((std::size_t) m_ioDevice.read(reinterpret_cast<char *>(&m_subIdentifier), sizeof(m_subIdentifier)) < sizeof(m_subIdentifier)) {
@@ -45,10 +47,10 @@ RiffReader::ChunkReadResult RiffReader::nextChunk()
 			return ERROR;
 		}
 
-		qDebug() << TAG << "Sub-identifier:" << m_subIdentifier;
-	}
+		m_availableDataLeft -= sizeof(m_subIdentifier);
 
-	m_availableDataLeft = m_currentChunkHeader.dataLength();
+		qDebug() << TAG << "Sub-identifier:" << subIdentifier();
+	}
 
 	return OK;
 }
