@@ -3,6 +3,7 @@
 #include "startpage.h"
 #include "filesselectionpage.h"
 #include "wavsettingspage.h"
+#include "mp3settingspage.h"
 
 const QString ConverterWizard::WIZARD_WINDOW_POSITION_KEY = "wizard/position";
 
@@ -11,6 +12,7 @@ ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
 	setPage(Page_Start, new StartPage(m_viewModel));
 	setPage(Page_FilesSelection, new FilesSelectionPage(m_viewModel));
 	setPage(Page_WavSetings, new WavSettingsPage);
+	setPage(Page_Mp3Settings, new Mp3SettingsPage);
 
 #ifndef Q_OS_MAC
 	setWizardStyle(ModernStyle);

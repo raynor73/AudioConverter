@@ -4,13 +4,14 @@
 #include <QFileDialog>
 #include <riffreader.h>
 #include <QDebug>
+#include <lame/lame.h>
 #include "converterwizard.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
-	/*QCoreApplication::setOrganizationName("Lapin Soft");
+	QCoreApplication::setOrganizationName("Lapin Soft");
 	QCoreApplication::setApplicationName("Audio Converter");
 
 #ifndef QT_NO_TRANSLATION
@@ -24,16 +25,16 @@ int main(int argc, char *argv[])
 #endif
 
 	ConverterWizard wizard;
-	wizard.show();*/
+	wizard.show();
 
-	QString path = QFileDialog::getOpenFileName(NULL, "Pick WAV file", QDir::homePath(), "WAV files (*.wav)");
+	/*QString path = QFileDialog::getOpenFileName(NULL, "Pick WAV file", QDir::homePath(), "WAV files (*.wav)");
 	QFile wavFile(path);
 	wavFile.open(QFile::ReadOnly);
 	RiffReader riffReader(wavFile);
 	while (riffReader.nextChunk() == RiffReader::OK) {
 		qDebug() << "Found chunk with identifier:" << riffReader.chunkHeader().identifier();
 	}
-	wavFile.close();
+	wavFile.close();*/
 
 	return app.exec();
 }

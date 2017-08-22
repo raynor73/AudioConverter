@@ -20,7 +20,10 @@ startpage.cpp \
     filesselectionpage.cpp \
     wavsettingspage.cpp \
     riffreader/riffreader.cpp \
-    riffreader/riffchunkheader.cpp
+    riffreader/riffchunkheader.cpp \
+    wavreader/wavreader.cpp \
+    wavreader/wavformat.cpp \
+    mp3settingspage.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
@@ -29,13 +32,21 @@ HEADERS  += mainwindow.h \
     filesselectionpage.h \
     wavsettingspage.h \
     riffreader/riffreader.h \
-    riffreader/riffchunkheader.h
+    riffreader/riffchunkheader.h \
+    wavreader/wavreader.h \
+    wavreader/wavformat.h \
+    mp3settingspage.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \
     filesselectionpage.ui \
-    wavsettingspage.ui
+    wavsettingspage.ui \
+    mp3settingspage.ui
 
 TRANSLATIONS += audioconverter.ts
 
 INCLUDEPATH += riffreader
+
+CONFIG += c++11
+
+unix:!macx: LIBS += -lmp3lame
