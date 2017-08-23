@@ -2,16 +2,22 @@
 #define SOUNDBUFFER_H
 
 #include <QObject>
+#include "soundbufferparams.h"
 
 class SoundBuffer : public QObject
 {
 	Q_OBJECT
+
 public:
-	explicit SoundBuffer(QObject *parent = 0);
+	SoundBuffer(SoundBufferParams params, QObject *parent = 0);
+	virtual ~SoundBuffer();
 
-signals:
+	SoundBufferParams params() const { return m_params; }
+	char *data() { return m_data; }
 
-public slots:
+private:
+	SoundBufferParams m_params;
+	char *m_data;
 };
 
 #endif // SOUNDBUFFER_H

@@ -1,6 +1,7 @@
 #include "resampler.h"
 
-Resampler::Resampler(QObject *parent) : QObject(parent)
+Resampler::Resampler(SoundBufferParams sourceBufferParams, SoundBufferParams destBufferParams, QObject *parent) :
+	QObject(parent)
 {
 
 }

@@ -25,7 +25,8 @@ startpage.cpp \
 	wavdecoder/wavformat.cpp \
     mp3settingspage.cpp \
     audioconverter/audioconverter.cpp \
-    audioconverter/resampler.cpp
+audioconverter/resampler.cpp \
+audioconverter/soundbuffer.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
@@ -39,7 +40,9 @@ HEADERS  += mainwindow.h \
 	wavdecoder/wavformat.h \
     mp3settingspage.h \
     audioconverter/audioconverter.h \
-    audioconverter/resampler.h
+audioconverter/resampler.h \
+audioconverter/soundbuffer.h \
+    audioconverter/soundbufferparams.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \
@@ -54,3 +57,8 @@ INCLUDEPATH += riffreader
 CONFIG += c++11
 
 unix:!macx: LIBS += -lmp3lame
+
+macx: LIBS += -L$$PWD/libs/macos/lamemp3/ -lmp3lame.0
+
+INCLUDEPATH += $$PWD/libs/include
+DEPENDPATH += $$PWD/libs/include

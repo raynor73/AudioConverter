@@ -2,14 +2,22 @@
 #define RESAMPLER_H
 
 #include <QObject>
+#include "soundbuffer.h"
 
 class Resampler : public QObject
 {
 	Q_OBJECT
 
 public:
-	explicit Resampler(QObject *parent = 0);
+	Resampler(SoundBufferParams sourceBufferParams, SoundBufferParams destBufferParams, QObject *parent = 0);
 
+	void resample(int length);
+	SoundBuffer &sourceBuffer() { return *m_sourceBuffer; }
+	SoundBuffer &destBuffer() { return *m_destBuffer; }
+
+private:
+	SoundBuffer *m_sourceBuffer;
+	SoundBuffer *m_destBuffer;
 };
 
 #endif // RESAMPLER_H
