@@ -5,12 +5,12 @@
 #include <QIODevice>
 #include "wavformat.h"
 
-class WavReader : public QObject
+class WavDecoder : public QObject
 {
 	Q_OBJECT
 
 public:
-	WavReader(QIODevice &ioDevice, QObject *parent = 0);
+	WavDecoder(QIODevice &ioDevice, QObject *parent = 0);
 
 	bool init();
 	WavFormat format();

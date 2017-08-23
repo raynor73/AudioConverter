@@ -21,9 +21,11 @@ startpage.cpp \
     wavsettingspage.cpp \
     riffreader/riffreader.cpp \
     riffreader/riffchunkheader.cpp \
-    wavreader/wavreader.cpp \
-    wavreader/wavformat.cpp \
-    mp3settingspage.cpp
+	wavdecoder/wavdecoder.cpp \
+	wavdecoder/wavformat.cpp \
+    mp3settingspage.cpp \
+    audioconverter/audioconverter.cpp \
+    audioconverter/resampler.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
@@ -33,9 +35,11 @@ HEADERS  += mainwindow.h \
     wavsettingspage.h \
     riffreader/riffreader.h \
     riffreader/riffchunkheader.h \
-    wavreader/wavreader.h \
-    wavreader/wavformat.h \
-    mp3settingspage.h
+	wavdecoder/wavdecoder.h \
+	wavdecoder/wavformat.h \
+    mp3settingspage.h \
+    audioconverter/audioconverter.h \
+    audioconverter/resampler.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \
