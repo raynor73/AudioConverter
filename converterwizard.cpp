@@ -12,7 +12,7 @@ ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
 	setPage(Page_Start, new StartPage(m_viewModel));
 	setPage(Page_FilesSelection, new FilesSelectionPage(m_viewModel));
 	setPage(Page_WavSetings, new WavSettingsPage);
-	setPage(Page_Mp3Settings, new Mp3SettingsPage);
+	setPage(Page_Mp3Settings, new Mp3SettingsPage(m_viewModel));
 
 #ifndef Q_OS_MAC
 	setWizardStyle(ModernStyle);

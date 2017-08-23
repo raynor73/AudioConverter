@@ -24,13 +24,18 @@ public:
 	QString destDirPath() const { return m_destDirPath; }
 	void setDestDirPath(QString destDirPath) { m_destDirPath = destDirPath; }
 
+	int mp3BitrateIndex() const { return m_mp3BitrateIndex; }
+	void setMp3BitrateIndex(int bitrateIndex) { m_mp3BitrateIndex = bitrateIndex; }
+
 private:
 	static const QString CONVERTION_WAY_KEY;
+	static const QString MP3_BITRATE_INDEX_KEY;
 
 	QSettings m_settings;
 	ConvertionWay m_convertionWay;
 	QStringList m_sourceFilePaths;
 	QString m_destDirPath;
+	int m_mp3BitrateIndex;
 };
 
 #endif // CONVERTERWIZARDVIEWMODEL_H
