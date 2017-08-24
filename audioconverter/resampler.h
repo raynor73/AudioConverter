@@ -10,8 +10,9 @@ class Resampler : public QObject
 
 public:
 	Resampler(SoundBufferParams sourceBufferParams, SoundBufferParams destBufferParams, QObject *parent = 0);
+	virtual ~Resampler();
 
-	void resample(int length);
+	void resample(int numberOfSamples);
 	SoundBuffer &sourceBuffer() { return *m_sourceBuffer; }
 	SoundBuffer &destBuffer() { return *m_destBuffer; }
 

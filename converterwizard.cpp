@@ -4,6 +4,7 @@
 #include "filesselectionpage.h"
 #include "wavsettingspage.h"
 #include "mp3settingspage.h"
+#include "progresspage.h"
 
 const QString ConverterWizard::WIZARD_WINDOW_POSITION_KEY = "wizard/position";
 
@@ -13,6 +14,7 @@ ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
 	setPage(Page_FilesSelection, new FilesSelectionPage(m_viewModel));
 	setPage(Page_WavSetings, new WavSettingsPage);
 	setPage(Page_Mp3Settings, new Mp3SettingsPage(m_viewModel));
+	setPage(Page_Progress, new ProgressPage(m_audioConverter));
 
 #ifndef Q_OS_MAC
 	setWizardStyle(ModernStyle);
@@ -25,6 +27,11 @@ ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
 	connect(this, &ConverterWizard::finished, [this]() {
 		writeSettings();
 	});
+
+	connect(this, &ConverterWizard::currentIdChanged, [this](int currentId) {
+		if (currentId == Page_Progress)
+			m_audioConverter.convert(m_viewModel.sourceFilePaths(), m_viewModel.destDirPath());
+	});
 }
 
 int ConverterWizard::nextId() const
@@ -36,6 +43,10 @@ int ConverterWizard::nextId() const
 
 	case Page_FilesSelection:
 		return m_viewModel.convertionWay() == ConverterWizardViewModel::WAV_TO_MP3 ? Page_Mp3Settings : Page_WavSetings;
+
+	case Page_WavSetings:
+	case Page_Mp3Settings:
+		return Page_Progress;
 
 	default:
 		return -1;

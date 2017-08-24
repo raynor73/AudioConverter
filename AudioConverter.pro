@@ -22,11 +22,12 @@ startpage.cpp \
     riffreader/riffreader.cpp \
     riffreader/riffchunkheader.cpp \
 	wavdecoder/wavdecoder.cpp \
-	wavdecoder/wavformat.cpp \
     mp3settingspage.cpp \
     audioconverter/audioconverter.cpp \
 audioconverter/resampler.cpp \
-audioconverter/soundbuffer.cpp
+audioconverter/soundbuffer.cpp \
+    progresspage.cpp \
+    audioconverter/converterthread.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
@@ -42,17 +43,22 @@ HEADERS  += mainwindow.h \
     audioconverter/audioconverter.h \
 audioconverter/resampler.h \
 audioconverter/soundbuffer.h \
-    audioconverter/soundbufferparams.h
+    audioconverter/soundbufferparams.h \
+    progresspage.h \
+    audioconverter/converterthread.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \
     filesselectionpage.ui \
     wavsettingspage.ui \
-    mp3settingspage.ui
+    mp3settingspage.ui \
+    progresspage.ui
 
 TRANSLATIONS += audioconverter.ts
 
-INCLUDEPATH += riffreader
+INCLUDEPATH += riffreader \
+	wavdecoder \
+	audioconverter
 
 CONFIG += c++11
 

@@ -6,13 +6,14 @@
 #include <QSettings>
 #include <QCloseEvent>
 #include "converterwizardviewmodel.h"
+#include <audioconverter.h>
 
 class ConverterWizard : public QWizard
 {
 	Q_OBJECT
 
 public:
-	enum { Page_Start, Page_FilesSelection, Page_WavSetings, Page_Mp3Settings };
+	enum { Page_Start, Page_FilesSelection, Page_WavSetings, Page_Mp3Settings, Page_Progress };
 
 	ConverterWizard(QWidget *parent = nullptr);
 
@@ -23,6 +24,7 @@ private:
 
 	QSettings m_settings;
 	ConverterWizardViewModel m_viewModel;
+	AudioConverter m_audioConverter;
 
 	void writeSettings();
 	void readSettings();
