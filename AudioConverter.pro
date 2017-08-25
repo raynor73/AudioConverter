@@ -62,9 +62,17 @@ INCLUDEPATH += riffreader \
 
 CONFIG += c++11
 
+win32: LIBS += -L$$PWD/libs/win32 -llibmp3lame
 unix:!macx: LIBS += -lmp3lame
-
-macx: LIBS += -L$$PWD/libs/macos/lamemp3/ -lmp3lame.0
+#macx: LIBS += -L$$PWD/libs/macos/lamemp3/ -lmp3lame.0
 
 INCLUDEPATH += $$PWD/libs/include
 DEPENDPATH += $$PWD/libs/include
+
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/libs/ -llibmp3lame-static
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/libs/ -llibmp3lame-staticd
+
+#win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/libs/liblibmp3lame-static.a
+#else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/libs/liblibmp3lame-staticd.a
+#else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/libs/libmp3lame-static.lib
+#else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/libs/libmp3lame-staticd.lib
