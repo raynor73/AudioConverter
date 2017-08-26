@@ -36,6 +36,8 @@ FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel
 				new QListWidgetItem(path, ui->filePathsListWidget);
 			}
 		}
+
+		emit completeChanged();
 	});
 
 	connect(ui->pickDirButton, &QPushButton::clicked, [this]() {
@@ -46,7 +48,14 @@ FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel
 			m_wizardViewModel.setDestDirPath(selectedDirPath);
 			ui->destDirLabel->setText(selectedDirPath);
 		}
+
+		emit completeChanged();
 	});
+}
+
+bool FilesSelectionPage::isComplete() const
+{
+	return m_wizardViewModel.sourceFilePaths().size() > 0 && !m_wizardViewModel.destDirPath().isEmpty();
 }
 
 FilesSelectionPage::~FilesSelectionPage()

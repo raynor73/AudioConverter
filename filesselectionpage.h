@@ -17,6 +17,8 @@ public:
 	FilesSelectionPage(ConverterWizardViewModel &wizardViewModel, QWidget *parent = 0);
 	virtual ~FilesSelectionPage();
 
+	bool isComplete() const override;
+
 private:
 	Ui::FilesSelectionPage *ui;
 	ConverterWizardViewModel &m_wizardViewModel;
