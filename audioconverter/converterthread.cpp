@@ -5,6 +5,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <wavdecoder.h>
+#include <QDebug>
 
 const QString ConverterThread::TAG = "ConverterThread";
 
@@ -53,7 +54,7 @@ void ConverterThread::run()
 			mp3File.write((char *) mp3Buffer, bytesToWrite);
 
 			totalBytesRead += bytesRead;
-			m_currentFileProgress = float(bytesRead) / wavFileInfo.size();
+			m_currentFileProgress = float(totalBytesRead) / wavFileInfo.size();
 			emit progressChanged(calculateProgress());
 		}
 		bytesToWrite = lame_encode_flush(lameGlobalFlags, mp3Buffer, mp3BufferSize);
