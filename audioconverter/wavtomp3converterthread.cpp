@@ -54,10 +54,14 @@ void WavToMp3ConverterThread::run()
 			totalBytesRead += bytesRead;
 			m_currentFileProgress = float(totalBytesRead) / wavFileInfo.size();
 			emit progressChanged(calculateProgress());
+
+			if (isInterruptionRequested())
+				goto clean_and_exit;
 		}
 		bytesToWrite = lame_encode_flush(lameGlobalFlags, mp3Buffer, mp3BufferSize);
 		mp3File.write((char *) mp3Buffer, bytesToWrite);
 
+clean_and_exit:
 		delete wavDecoder;
 		wavFile.close();
 		mp3File.close();

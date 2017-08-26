@@ -19,6 +19,9 @@ public:
 
 	int nextId() const override;
 
+protected:
+	void closeEvent(QCloseEvent *closeEvent) override;
+
 private:
 	static const QString WIZARD_WINDOW_POSITION_KEY;
 

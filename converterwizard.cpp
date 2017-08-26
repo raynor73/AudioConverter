@@ -42,6 +42,14 @@ ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
 	});
 }
 
+void ConverterWizard::closeEvent(QCloseEvent *closeEvent)
+{
+	if (m_audioConverter.state() == AudioConverter::WORKING)
+		m_audioConverter.cancel();
+
+	closeEvent->accept();
+}
+
 int ConverterWizard::nextId() const
 {
 	switch (currentId())

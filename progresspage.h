@@ -16,9 +16,13 @@ public:
 	ProgressPage(AudioConverter &audioConverter, QWidget *parent = 0);
 	~ProgressPage();
 
+	void initializePage() override;
+
 private:
 	Ui::ProgressPage *ui;
 	AudioConverter &m_audioConverter;
+
+	void updateWizardButtons(AudioConverter::State state);
 };
 
 #endif // PROGRESSPAGE_H

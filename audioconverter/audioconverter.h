@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QMetaType>
 #include "converterthread.h"
 
 class AudioConverter : public QObject
@@ -28,6 +29,7 @@ public:
 	State state() const { return m_state; }
 
 	void convert(const QStringList &sourceFilePaths, const QString &destDirPath, Settings settings);
+	void cancel();
 	float progress() const { return m_progress; }
 
 signals:

@@ -10,7 +10,9 @@ AudioConverter::AudioConverter(QObject *parent) :
 	QObject(parent),
 	m_state(IDLE),
 	m_converterThread(nullptr)
-{}
+{
+	qRegisterMetaType<State>("State");
+}
 
 AudioConverter::~AudioConverter()
 {
@@ -42,17 +44,29 @@ void AudioConverter::convert(const QStringList &sourceFilePaths, const QString &
 	wavToMp3Settings.bitrate = settings.mp3Bitrate;
 	m_converterThread = new WavToMp3ConverterThread(sourceFilePaths, destDirPath, wavToMp3Settings);
 	connect(m_converterThread, &ConverterThread::progressChanged, this, &AudioConverter::progressChanged);
-	connect(m_converterThread, &ConverterThread::finished, [this]() {
+	connect(m_converterThread, &ConverterThread::finished, this, [this]() {
 		changeState(IDLE);
 	});
 	m_converterThread->start();
+}
+
+void AudioConverter::cancel()
+{
+	if (m_state != WORKING) {
+		qWarning("%s: unable to cancel converting while has state: %s", qPrintable(TAG),
+				 qPrintable(QVariant(m_state).toString()));
+		return;
+	}
+
+	m_converterThread->requestInterruption();
+	m_converterThread->wait();
 }
 
 void AudioConverter::changeState(State newState)
 {
 	if (m_state == newState) {
 		qFatal("%s: Trying to change state to %s but already has that state", qPrintable(TAG),
-			   qPrintable(QVariant(m_state).toString()));
+			   qPrintable(QMetaEnum::fromType<State>().valueToKey(m_state)));
 		qApp->exit(1);
 	}
 
