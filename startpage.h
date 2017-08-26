@@ -20,7 +20,6 @@ public:
 private:
 	Ui::StartPage *m_ui;
 	ConverterWizardViewModel &m_wizardViewModel;
-	QSettings m_settings;
 };
 
 #endif // STARTPAGE_H

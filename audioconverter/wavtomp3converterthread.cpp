@@ -1,21 +1,19 @@
-#include "converterthread.h"
-#include <cmath>
+#include "wavtomp3converterthread.h"
 #include <lame/lame.h>
 #include <QFile>
 #include <QFileInfo>
-#include <QDir>
 #include <wavdecoder.h>
-#include <QDebug>
+#include <QDir>
 
-const QString ConverterThread::TAG = "ConverterThread";
+const QString WavToMp3ConverterThread::TAG = "WavToMp3ConverterThread";
 
-ConverterThread::ConverterThread(const QStringList &sourceFilePaths, const QString &destDirPath, QObject *parent) :
-	QThread(parent),
-	m_sourceFilePaths(sourceFilePaths),
-	m_destDirPath(destDirPath)
+WavToMp3ConverterThread::WavToMp3ConverterThread(const QStringList &sourceFilePaths, const QString &destDirPath,
+												 Settings settings, QObject *parent) :
+	ConverterThread(sourceFilePaths, destDirPath, parent),
+	m_settings(settings)
 {}
 
-void ConverterThread::run()
+void WavToMp3ConverterThread::run()
 {
 	m_totalFiles = m_sourceFilePaths.size();
 	for (m_currentFileIndex = 0; m_currentFileIndex < m_sourceFilePaths.size(); m_currentFileIndex++) {
@@ -23,10 +21,8 @@ void ConverterThread::run()
 		emit progressChanged(calculateProgress());
 
 		auto lameGlobalFlags = lame_init();
-		lame_set_num_channels(lameGlobalFlags, 2); // From source file
-		lame_set_in_samplerate(lameGlobalFlags, 44100); // From source file
-		lame_set_brate(lameGlobalFlags, 128); // From wizard
-		lame_set_quality(lameGlobalFlags, 2); // Hardcoded
+		lame_set_brate(lameGlobalFlags, m_settings.bitrate);
+		lame_set_quality(lameGlobalFlags, 2);
 		if (lame_init_params(lameGlobalFlags) < 0) {
 			qCritical("%s: lame_init_params failed", qPrintable(TAG));
 			lame_close(lameGlobalFlags);
@@ -38,6 +34,8 @@ void ConverterThread::run()
 		wavFile.open(QFile::ReadOnly);
 		WavDecoder *wavDecoder = new WavDecoder(wavFile);
 		wavDecoder->init();
+		lame_set_num_channels(lameGlobalFlags, wavDecoder->format().numberOfChannels);
+		lame_set_in_samplerate(lameGlobalFlags, wavDecoder->format().sampleRate);
 		auto mp3BufferSize = int(std::ceil(1.25 * BUFFER_SIZE / wavDecoder->format().dataBlockSize + 7200));
 		auto mp3Buffer = new unsigned char[mp3BufferSize];
 
@@ -67,7 +65,7 @@ void ConverterThread::run()
 	}
 }
 
-float ConverterThread::calculateProgress()
+float WavToMp3ConverterThread::calculateProgress()
 {
 	if (m_totalFiles == 0)
 		return 0;

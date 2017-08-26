@@ -2,6 +2,7 @@
 #include <QtGlobal>
 #include <QMetaEnum>
 #include <QApplication>
+#include <wavtomp3converterthread.h>
 
 const QString AudioConverter::TAG = "AudioConverter";
 
@@ -13,10 +14,13 @@ AudioConverter::AudioConverter(QObject *parent) :
 
 AudioConverter::~AudioConverter()
 {
-	destroyThreadIfRequired();
+	if (m_converterThread != nullptr) {
+		m_converterThread->wait();
+		delete m_converterThread;
+	}
 }
 
-void AudioConverter::convert(const QStringList &sourceFilePaths, const QString &destDirPath)
+void AudioConverter::convert(const QStringList &sourceFilePaths, const QString &destDirPath, Settings settings)
 {
 	if (m_state != IDLE) {
 		qWarning("%s: unable to start converting while has state: %s", qPrintable(TAG),
@@ -31,11 +35,15 @@ void AudioConverter::convert(const QStringList &sourceFilePaths, const QString &
 
 	changeState(WORKING);
 
-	m_converterThread = new ConverterThread(sourceFilePaths, destDirPath);
+	if (m_converterThread != nullptr)
+		delete m_converterThread;
+
+	WavToMp3ConverterThread::Settings wavToMp3Settings;
+	wavToMp3Settings.bitrate = settings.mp3Bitrate;
+	m_converterThread = new WavToMp3ConverterThread(sourceFilePaths, destDirPath, wavToMp3Settings);
 	connect(m_converterThread, &ConverterThread::progressChanged, this, &AudioConverter::progressChanged);
 	connect(m_converterThread, &ConverterThread::finished, [this]() {
 		changeState(IDLE);
-		destroyThreadIfRequired();
 	});
 	m_converterThread->start();
 }
@@ -54,12 +62,4 @@ void AudioConverter::changeState(State newState)
 	m_state = newState;
 
 	emit stateChanged(m_state);
-}
-
-void AudioConverter::destroyThreadIfRequired()
-{
-	if (m_converterThread != nullptr) {
-		m_converterThread->wait();
-		delete m_converterThread;
-	}
 }

@@ -3,6 +3,15 @@
 
 const QString ConverterWizardViewModel::CONVERTION_WAY_KEY = "wizard/start/convertion";
 const QString ConverterWizardViewModel::MP3_BITRATE_INDEX_KEY = "wizard/mp3/bitrate_index";
+const QString ConverterWizardViewModel::SOURCE_DIR_PATH_KEY = "wizard/files/source_dir_path";
+const QString ConverterWizardViewModel::DEST_DIR_PATH_KEY = "wizard/files/dest_dir_path";
+
+QList<QString> ConverterWizardViewModel::m_mp3BitrateNames = {
+	"32", "40", "48", "56", "64", "80", "96", "112", "128", "160", "192", "224", "256", "320"
+};
+QList<int> ConverterWizardViewModel::m_mp3BitrateValues = {
+	32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320
+};
 
 ConverterWizardViewModel::ConverterWizardViewModel(QObject *parent) : QObject(parent) {
 	if (m_settings.contains(CONVERTION_WAY_KEY)) {
@@ -13,10 +22,17 @@ ConverterWizardViewModel::ConverterWizardViewModel(QObject *parent) : QObject(pa
 	}
 
 	m_mp3BitrateIndex = m_settings.value(MP3_BITRATE_INDEX_KEY, 8).toInt();
+
+	m_sourceDirPath = m_settings.value(SOURCE_DIR_PATH_KEY, "").toString();
+	m_destDirPath = m_settings.value(DEST_DIR_PATH_KEY, "").toString();
 }
 
 ConverterWizardViewModel::~ConverterWizardViewModel()
 {
 	m_settings.setValue(CONVERTION_WAY_KEY, QMetaEnum::fromType<ConvertionWay>().valueToKey(m_convertionWay));
 	m_settings.setValue(MP3_BITRATE_INDEX_KEY, m_mp3BitrateIndex);
+	if (!m_sourceDirPath.isEmpty())
+		m_settings.setValue(SOURCE_DIR_PATH_KEY, m_sourceDirPath);
+	if (!m_destDirPath.isEmpty())
+		m_settings.setValue(DEST_DIR_PATH_KEY, m_destDirPath);
 }

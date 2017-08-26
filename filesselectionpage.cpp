@@ -4,10 +4,6 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QListWidgetItem>
-#include <QDebug>
-
-const QString FilesSelectionPage::PREV_SOURCE_DIR_KEY = "wizard/files/source";
-const QString FilesSelectionPage::PREV_DEST_DIR_KEY = "wizard/files/dest";
 
 FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel, QWidget *parent) :
 	QWizardPage(parent),
@@ -16,13 +12,8 @@ FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel
 {
 	ui->setupUi(this);
 
-	if (m_settings.contains(PREV_SOURCE_DIR_KEY))
-		m_sourceDir = m_settings.value(PREV_SOURCE_DIR_KEY).toString();
-
-	if (m_settings.contains(PREV_DEST_DIR_KEY)) {
-		m_destDirPath = m_settings.value(PREV_DEST_DIR_KEY).toString();
-		ui->destDirLabel->setText(m_destDirPath);
-	}
+	if (!m_wizardViewModel.destDirPath().isEmpty())
+		ui->destDirLabel->setText(m_wizardViewModel.destDirPath());
 
 	connect(ui->pickFilesButton, &QPushButton::clicked, [this]() {
 		QString filter;
@@ -31,14 +22,16 @@ FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel
 		else
 			filter = tr("MP3 files (*.mp3)");
 
-		QStringList filePaths = QFileDialog::getOpenFileNames(this, tr("Select one or more files to open"),
-															  m_sourceDir.isEmpty() ? QDir::homePath() : m_sourceDir,
+		QString dir = m_wizardViewModel.sourceDirPath().isEmpty() ? QDir::homePath() :
+																	m_wizardViewModel.sourceDirPath();
+		QStringList filePaths = QFileDialog::getOpenFileNames(this, tr("Select one or more files to open"), dir,
 															  filter);
 		if (filePaths.size() >= 1) {
-			m_sourceDir = QFileInfo(filePaths[0]).dir().absolutePath();
+			m_wizardViewModel.setSourceDirPath(QFileInfo(filePaths[0]).dir().absolutePath());
 			m_wizardViewModel.sourceFilePaths().clear();
 			m_wizardViewModel.sourceFilePaths() = filePaths;
 
+			ui->filePathsListWidget->clear();
 			for (auto path : filePaths) {
 				new QListWidgetItem(path, ui->filePathsListWidget);
 			}
@@ -46,26 +39,17 @@ FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel
 	});
 
 	connect(ui->pickDirButton, &QPushButton::clicked, [this]() {
-		QString destDirPath = QDir::homePath();
-		if (!m_destDirPath.isEmpty())
-			destDirPath = QFileInfo(m_destDirPath).dir().absolutePath();
-
-		QString dirPath = QFileDialog::getExistingDirectory(this, tr("Select destination directory"), destDirPath);
-		if (!dirPath.isEmpty()) {
-			m_destDirPath = dirPath;
-			m_wizardViewModel.setDestDirPath(m_destDirPath);
-			ui->destDirLabel->setText(m_destDirPath);
+		QString dir = m_wizardViewModel.destDirPath().isEmpty() ? QDir::homePath() :
+																	m_wizardViewModel.destDirPath();
+		QString selectedDirPath = QFileDialog::getExistingDirectory(this, tr("Select destination directory"), dir);
+		if (!selectedDirPath.isEmpty()) {
+			m_wizardViewModel.setDestDirPath(selectedDirPath);
+			ui->destDirLabel->setText(selectedDirPath);
 		}
 	});
 }
 
 FilesSelectionPage::~FilesSelectionPage()
 {
-	if (!m_sourceDir.isEmpty())
-		m_settings.setValue(PREV_SOURCE_DIR_KEY, m_sourceDir);
-
-	if (!m_destDirPath.isEmpty())
-		m_settings.setValue(PREV_DEST_DIR_KEY, m_destDirPath);
-
 	delete ui;
 }

@@ -8,7 +8,7 @@ Mp3SettingsPage::Mp3SettingsPage(ConverterWizardViewModel &wizardViewModel, QWid
 {
 	ui->setupUi(this);
 
-	ui->bitrateComboBox->addItems(m_bitrates);
+	ui->bitrateComboBox->addItems(ConverterWizardViewModel::mp3BitrateNames());
 	ui->bitrateComboBox->setCurrentIndex(m_wizardViewModel.mp3BitrateIndex());
 
 	connect(ui->bitrateComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onBitrateIndexChanged(int)));

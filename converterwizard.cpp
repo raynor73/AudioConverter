@@ -29,8 +29,16 @@ ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
 	});
 
 	connect(this, &ConverterWizard::currentIdChanged, [this](int currentId) {
-		if (currentId == Page_Progress)
-			m_audioConverter.convert(m_viewModel.sourceFilePaths(), m_viewModel.destDirPath());
+		if (currentId == Page_Progress) {
+			AudioConverter::Settings settings;
+			if (m_viewModel.convertionWay() == ConverterWizardViewModel::WAV_TO_MP3) {
+				settings.convertionWay = AudioConverter::WAV_TO_MP3;
+				settings.mp3Bitrate = ConverterWizardViewModel::mp3BitrateValues()[m_viewModel.mp3BitrateIndex()];
+			} else {
+				settings.convertionWay = AudioConverter::MP3_TO_WAV;
+			}
+			m_audioConverter.convert(m_viewModel.sourceFilePaths(), m_viewModel.destDirPath(), settings);
+		}
 	});
 }
 
