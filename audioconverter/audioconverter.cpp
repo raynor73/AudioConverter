@@ -26,7 +26,7 @@ void AudioConverter::convert(const QStringList &sourceFilePaths, const QString &
 {
 	if (m_state != IDLE) {
 		qWarning("%s: unable to start converting while has state: %s", qPrintable(TAG),
-				 qPrintable(QVariant(m_state).toString()));
+				 qPrintable(QMetaEnum::fromType<State>().valueToKey(m_state)));
 		return;
 	}
 
@@ -54,7 +54,7 @@ void AudioConverter::cancel()
 {
 	if (m_state != WORKING) {
 		qWarning("%s: unable to cancel converting while has state: %s", qPrintable(TAG),
-				 qPrintable(QVariant(m_state).toString()));
+				 qPrintable(QMetaEnum::fromType<State>().valueToKey(m_state)));
 		return;
 	}
 

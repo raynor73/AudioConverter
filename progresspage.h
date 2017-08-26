@@ -21,6 +21,7 @@ public:
 private:
 	Ui::ProgressPage *ui;
 	AudioConverter &m_audioConverter;
+	bool m_isListenersConnected;
 
 	void updateWizardButtons(AudioConverter::State state);
 };

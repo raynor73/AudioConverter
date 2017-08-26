@@ -6,7 +6,8 @@
 ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 	QWizardPage(parent),
 	ui(new Ui::ProgressPage),
-	m_audioConverter(audioConverter)
+	m_audioConverter(audioConverter),
+	m_isListenersConnected(false)
 {
 	ui->setupUi(this);
 
@@ -22,13 +23,18 @@ ProgressPage::~ProgressPage()
 
 void ProgressPage::initializePage()
 {
-	connect(wizard(), &QWizard::rejected, [this]() {
-		m_audioConverter.cancel();
-	});
+	if (!m_isListenersConnected) {
+		m_isListenersConnected = true;
 
-	connect(&m_audioConverter, &AudioConverter::stateChanged, [this](AudioConverter::State state) {
-		updateWizardButtons(state);
-	});
+		connect(wizard(), &QWizard::rejected, [this]() {
+			if (m_audioConverter.state() == AudioConverter::WORKING)
+				m_audioConverter.cancel();
+		});
+
+		connect(&m_audioConverter, &AudioConverter::stateChanged, [this](AudioConverter::State state) {
+			updateWizardButtons(state);
+		});
+	}
 
 	updateWizardButtons(m_audioConverter.state());
 }
