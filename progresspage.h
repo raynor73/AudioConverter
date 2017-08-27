@@ -24,6 +24,7 @@ private:
 	bool m_isListenersConnected;
 
 	void updateWizardButtons(AudioConverter::State state);
+	void resetTable();
 };
 
 #endif // PROGRESSPAGE_H

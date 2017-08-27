@@ -12,7 +12,7 @@ ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	ui->tableWidget->setHorizontalHeaderLabels({ tr("Path"), tr("Result") });
+	resetTable();
 
 	connect(&m_audioConverter, &AudioConverter::progressChanged, [this](float progress) {
 		ui->progressBar->setValue(progress * 100);
@@ -22,9 +22,7 @@ ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 		if (state == AudioConverter::WORKING) {
 			ui->progressBar->setVisible(true);
 
-			ui->tableWidget->clear();
-			ui->tableWidget->setRowCount(0);
-			ui->tableWidget->setHorizontalHeaderLabels({ tr("Path"), tr("Result") });
+			resetTable();
 		} else {
 			ui->progressBar->setVisible(false);
 		}
@@ -47,6 +45,16 @@ ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 ProgressPage::~ProgressPage()
 {
 	delete ui;
+}
+
+void ProgressPage::resetTable()
+{
+	ui->tableWidget->clear();
+	ui->tableWidget->setRowCount(0);
+	ui->tableWidget->setHorizontalHeaderLabels({ tr("Path"), tr("Result") });
+
+	ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+	ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
 }
 
 void ProgressPage::initializePage()
