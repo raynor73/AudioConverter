@@ -21,6 +21,15 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QTableWidget" name="tableWidget">
+     <property name="columnCount">
+      <number>2</number>
+     </property>
+     <column/>
+     <column/>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

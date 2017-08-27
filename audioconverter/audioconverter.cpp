@@ -12,6 +12,7 @@ AudioConverter::AudioConverter(QObject *parent) :
 	m_converterThread(nullptr)
 {
 	qRegisterMetaType<State>("State");
+	qRegisterMetaType<ConvertionResultInfo>("ConvertionResultInfo");
 }
 
 AudioConverter::~AudioConverter()
@@ -46,6 +47,11 @@ void AudioConverter::convert(const QStringList &sourceFilePaths, const QString &
 	connect(m_converterThread, &ConverterThread::progressChanged, this, &AudioConverter::progressChanged);
 	connect(m_converterThread, &ConverterThread::finished, this, [this]() {
 		changeState(IDLE);
+	});
+	connect(m_converterThread, &ConverterThread::convertionResultAdded, this,
+			[this](ConverterThread::ConvertionResultInfo result) {
+		m_convertionResults += ConvertionResultInfo(result);
+		emit convertionResultAdded(m_convertionResults.last());
 	});
 	m_converterThread->start();
 }

@@ -26,14 +26,23 @@ void WavToMp3ConverterThread::run()
 		if (lame_init_params(lameGlobalFlags) < 0) {
 			qCritical("%s: lame_init_params failed", qPrintable(TAG));
 			lame_close(lameGlobalFlags);
-			return;
+			m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], FAILURE);
+			emit convertionResultAdded(m_convertionResults.last());
+			continue;
 		}
 
 		QFile wavFile(m_sourceFilePaths[m_currentFileIndex]);
 		QFileInfo wavFileInfo(wavFile);
 		wavFile.open(QFile::ReadOnly);
 		WavDecoder *wavDecoder = new WavDecoder(wavFile);
-		wavDecoder->init();
+		if (!wavDecoder->init()) {
+			qInfo("%s: WavDecoder::init failed", qPrintable(TAG));
+			wavFile.close();
+			lame_close(lameGlobalFlags);
+			m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], FAILURE);
+			emit convertionResultAdded(m_convertionResults.last());
+			continue;
+		}
 		lame_set_num_channels(lameGlobalFlags, wavDecoder->format().numberOfChannels);
 		lame_set_in_samplerate(lameGlobalFlags, wavDecoder->format().sampleRate);
 		auto mp3BufferSize = int(std::ceil(1.25 * BUFFER_SIZE / wavDecoder->format().dataBlockSize + 7200));
@@ -56,15 +65,18 @@ void WavToMp3ConverterThread::run()
 			emit progressChanged(calculateProgress());
 
 			if (isInterruptionRequested())
-				goto clean_and_exit;
+				goto interruption_requested;
 		}
 		bytesToWrite = lame_encode_flush(lameGlobalFlags, mp3Buffer, mp3BufferSize);
 		mp3File.write((char *) mp3Buffer, bytesToWrite);
 
-clean_and_exit:
+		m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], SUCCESS);
+		emit convertionResultAdded(m_convertionResults.last());
+
+interruption_requested:
 		delete wavDecoder;
-		wavFile.close();
 		mp3File.close();
+		wavFile.close();
 		lame_close(lameGlobalFlags);
 	}
 }

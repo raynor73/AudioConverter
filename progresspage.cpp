@@ -1,6 +1,7 @@
 #include "progresspage.h"
 #include "ui_progresspage.h"
 #include <QAbstractButton>
+#include <QMetaEnum>
 #include <QDebug>
 
 ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
@@ -11,8 +12,31 @@ ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	ui->tableWidget->setHorizontalHeaderLabels({ tr("Path"), tr("Result") });
+
 	connect(&m_audioConverter, &AudioConverter::progressChanged, [this](float progress) {
 		ui->progressBar->setValue(progress * 100);
+	});
+
+	connect(&m_audioConverter, &AudioConverter::stateChanged, [this](AudioConverter::State state) {
+		if (state == AudioConverter::WORKING) {
+			ui->tableWidget->clear();
+			ui->tableWidget->setRowCount(0);
+			ui->tableWidget->setHorizontalHeaderLabels({ tr("Path"), tr("Result") });
+		}
+	});
+
+	connect(&m_audioConverter, &AudioConverter::convertionResultAdded,
+			[this](AudioConverter::ConvertionResultInfo result) {
+
+		QTableWidgetItem *pathItem = new QTableWidgetItem(result.filePath);
+		QString resultString = QMetaEnum::fromType<AudioConverter::ConvertionResult>().valueToKey(result.result);
+		QTableWidgetItem *resultItem = new QTableWidgetItem(resultString);
+
+		int row = ui->tableWidget->rowCount();
+		ui->tableWidget->setRowCount(row + 1);
+		ui->tableWidget->setItem(row, 0, pathItem);
+		ui->tableWidget->setItem(row, 1, resultItem);
 	});
 }
 
