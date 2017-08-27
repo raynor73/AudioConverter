@@ -35,6 +35,14 @@ ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 		QString resultString = QMetaEnum::fromType<AudioConverter::ConvertionResult>().valueToKey(result.result);
 		QTableWidgetItem *resultItem = new QTableWidgetItem(resultString);
 
+		if (result.result == AudioConverter::SUCCESS) {
+			pathItem->setBackgroundColor(QColor::fromRgb(0xb6, 0xff, 0xb6));
+			resultItem->setBackgroundColor(QColor::fromRgb(0xb6, 0xff, 0xb6));
+		} else {
+			pathItem->setBackgroundColor(QColor::fromRgb(0xff, 0xb6, 0xb6));
+			resultItem->setBackgroundColor(QColor::fromRgb(0xff, 0xb6, 0xb6));
+		}
+
 		int row = ui->tableWidget->rowCount();
 		ui->tableWidget->setRowCount(row + 1);
 		ui->tableWidget->setItem(row, 0, pathItem);
