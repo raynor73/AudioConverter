@@ -20,9 +20,13 @@ ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 
 	connect(&m_audioConverter, &AudioConverter::stateChanged, [this](AudioConverter::State state) {
 		if (state == AudioConverter::WORKING) {
+			ui->progressBar->setVisible(true);
+
 			ui->tableWidget->clear();
 			ui->tableWidget->setRowCount(0);
 			ui->tableWidget->setHorizontalHeaderLabels({ tr("Path"), tr("Result") });
+		} else {
+			ui->progressBar->setVisible(false);
 		}
 	});
 
