@@ -13,32 +13,48 @@
   <property name="windowTitle">
    <string>WizardPage</string>
   </property>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>104</width>
-     <height>52</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QRadioButton" name="wavToMp3RadioButton">
-      <property name="text">
-       <string>WAV to MP3</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QRadioButton" name="mp3ToWavRadioButton">
-      <property name="text">
-       <string>MP3 to WAV</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+  <property name="title">
+   <string>Start</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Please, select convertion way (i.e. from what source type to what destination type you would like to convert)</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="wavToMp3RadioButton">
+     <property name="text">
+      <string>WAV to MP3</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="mp3ToWavRadioButton">
+     <property name="text">
+      <string>MP3 to WAV</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
