@@ -13,7 +13,7 @@ public:
 	enum ConvertionWay { WAV_TO_MP3, MP3_TO_WAV };
 	Q_ENUM(ConvertionWay)
 
-	explicit ConverterWizardViewModel(QObject *parent = 0);
+	ConverterWizardViewModel(QSettings &settings, QObject *parent = 0);
 	virtual ~ConverterWizardViewModel();
 
 	ConvertionWay convertionWay() const { return m_convertionWay; }
@@ -42,7 +42,7 @@ private:
 	static QList<QString> m_mp3BitrateNames;
 	static QList<int> m_mp3BitrateValues;
 
-	QSettings m_settings;
+	QSettings &m_settings;
 	ConvertionWay m_convertionWay;
 	QStringList m_sourceFilePaths;
 	QString m_sourceDirPath;

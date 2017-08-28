@@ -8,7 +8,10 @@
 
 const QString ConverterWizard::WIZARD_WINDOW_POSITION_KEY = "wizard/position";
 
-ConverterWizard::ConverterWizard(QWidget *parent) : QWizard(parent)
+ConverterWizard::ConverterWizard(QSettings &settings, QWidget *parent) :
+	QWizard(parent),
+	m_settings(settings),
+	m_viewModel(settings)
 {
 	setPage(Page_Start, new StartPage(m_viewModel));
 	setPage(Page_FilesSelection, new FilesSelectionPage(m_viewModel));

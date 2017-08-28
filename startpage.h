@@ -2,7 +2,6 @@
 #define STARTPAGE_H
 
 #include <QWizardPage>
-#include <QSettings>
 #include "converterwizardviewmodel.h"
 
 namespace Ui {

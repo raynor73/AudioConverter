@@ -15,7 +15,7 @@ class ConverterWizard : public QWizard
 public:
 	enum { Page_Start, Page_FilesSelection, Page_WavSetings, Page_Mp3Settings, Page_Progress };
 
-	ConverterWizard(QWidget *parent = nullptr);
+	ConverterWizard(QSettings &settings, QWidget *parent = nullptr);
 
 	int nextId() const override;
 
@@ -25,7 +25,7 @@ protected:
 private:
 	static const QString WIZARD_WINDOW_POSITION_KEY;
 
-	QSettings m_settings;
+	QSettings &m_settings;
 	ConverterWizardViewModel m_viewModel;
 	AudioConverter m_audioConverter;
 

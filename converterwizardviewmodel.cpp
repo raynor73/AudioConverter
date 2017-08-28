@@ -13,7 +13,10 @@ QList<int> ConverterWizardViewModel::m_mp3BitrateValues = {
 	32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320
 };
 
-ConverterWizardViewModel::ConverterWizardViewModel(QObject *parent) : QObject(parent) {
+ConverterWizardViewModel::ConverterWizardViewModel(QSettings &settings, QObject *parent) :
+	QObject(parent),
+	m_settings(settings)
+{
 	if (m_settings.contains(CONVERTION_WAY_KEY)) {
 		const char *key = m_settings.value(CONVERTION_WAY_KEY).toByteArray().data();
 		m_convertionWay = (ConvertionWay) QMetaEnum::fromType<ConvertionWay>().keyToValue(key);
