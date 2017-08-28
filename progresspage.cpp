@@ -2,6 +2,7 @@
 #include "ui_progresspage.h"
 #include <QAbstractButton>
 #include <QMetaEnum>
+#include <QFileInfo>
 #include <QDebug>
 
 ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
@@ -31,7 +32,7 @@ ProgressPage::ProgressPage(AudioConverter &audioConverter, QWidget *parent) :
 	connect(&m_audioConverter, &AudioConverter::convertionResultAdded,
 			[this](AudioConverter::ConvertionResultInfo result) {
 
-		QTableWidgetItem *pathItem = new QTableWidgetItem(result.filePath);
+		QTableWidgetItem *pathItem = new QTableWidgetItem(QFileInfo (result.filePath).fileName());
 		QString resultString = QMetaEnum::fromType<AudioConverter::ConvertionResult>().valueToKey(result.result);
 		QTableWidgetItem *resultItem = new QTableWidgetItem(resultString);
 
@@ -89,9 +90,11 @@ void ProgressPage::updateWizardButtons(AudioConverter::State state)
 		wizard()->button(QWizard::NextButton)->setEnabled(true);
 		wizard()->button(QWizard::BackButton)->setEnabled(true);
 		wizard()->button(QWizard::FinishButton)->setEnabled(true);
+		wizard()->button(QWizard::CancelButton)->setVisible(false);
 	} else {
 		wizard()->button(QWizard::NextButton)->setEnabled(false);
 		wizard()->button(QWizard::BackButton)->setEnabled(false);
 		wizard()->button(QWizard::FinishButton)->setEnabled(false);
+		wizard()->button(QWizard::CancelButton)->setVisible(true);
 	}
 }
