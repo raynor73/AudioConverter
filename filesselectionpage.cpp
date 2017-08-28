@@ -4,6 +4,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QListWidgetItem>
+#include <QFileInfo>
 
 FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel, QWidget *parent) :
 	QWizardPage(parent),
@@ -33,7 +34,7 @@ FilesSelectionPage::FilesSelectionPage(ConverterWizardViewModel &wizardViewModel
 
 			ui->filePathsListWidget->clear();
 			for (auto path : filePaths) {
-				new QListWidgetItem(path, ui->filePathsListWidget);
+				new QListWidgetItem(QFileInfo(path).fileName(), ui->filePathsListWidget);
 			}
 		}
 
