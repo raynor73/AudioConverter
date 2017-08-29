@@ -32,7 +32,9 @@ audioconverter/soundbuffer.cpp \
     progresspage.cpp \
     audioconverter/wavtomp3converterthread.cpp \
     audioconverter/mp3towavconverterthread.cpp \
-    audioconverter/converterthread.cpp
+    audioconverter/converterthread.cpp \
+    riffwriter/riffwriter.cpp \
+    riffwriter/riffoutput.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
@@ -52,7 +54,9 @@ audioconverter/soundbuffer.h \
     progresspage.h \
     audioconverter/converterthread.h \
     audioconverter/wavtomp3converterthread.h \
-    audioconverter/mp3towavconverterthread.h
+    audioconverter/mp3towavconverterthread.h \
+    riffwriter/riffwriter.h \
+    riffwriter/riffoutput.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \

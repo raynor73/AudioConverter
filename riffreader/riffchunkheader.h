@@ -8,6 +8,9 @@
 class RiffChunkHeader
 {
 public:
+	RiffChunkHeader() {}
+	RiffChunkHeader(char *identifier, quint32 dataLength);
+
 	static const QString RIFF_IDENTIFIER;
 	static const QString LIST_IDENTIFIER;
 
