@@ -8,12 +8,14 @@
 #include <lame/lame.h>
 #include <QSettings>
 #include "converterwizard.h"
+#include <riffoutput.h>
+#include <riffwriter.h>
 
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
-#ifdef PORTABLE
+/*#ifdef PORTABLE
 	QString filePath = QCoreApplication::applicationDirPath() + QDir::separator() + APPLICATION_NAME + ".ini";
 	QSettings settings(filePath, QSettings::IniFormat);
 #else
@@ -31,7 +33,24 @@ int main(int argc, char *argv[])
 #endif
 
 	ConverterWizard wizard(settings);
-	wizard.show();
+	wizard.show();*/
+
+	QFile riffFile(QDir::homePath() + QDir::separator() + "some.riff");
+	riffFile.open(QFile::ReadWrite);
+	RiffOutput fileRiffOutput(&riffFile);
+
+	RiffWriter riffWriter(fileRiffOutput);
+	riffWriter.startChunk(RiffWriter::RIFF_CHUNCK_IDENTIFIER, "QWER");
+
+	RiffOutput riffOutput(&riffWriter);
+	RiffWriter nestedWriter(riffOutput);
+	nestedWriter.startChunk("DATA");
+	const char *data = "asdfghjkl";
+	riffWriter.writeData(data, qstrlen(data));
+	nestedWriter.finishChunk();
+
+	riffWriter.finishChunk();
+	riffFile.close();
 
 	return app.exec();
 }

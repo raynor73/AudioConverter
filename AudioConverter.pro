@@ -69,7 +69,8 @@ TRANSLATIONS += audioconverter.ts
 
 INCLUDEPATH += riffreader \
 	wavdecoder \
-	audioconverter
+	audioconverter \
+	riffwriter
 
 CONFIG += c++11
 
