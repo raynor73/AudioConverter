@@ -2,7 +2,8 @@
 #include <QtGlobal>
 #include <QMetaEnum>
 #include <QApplication>
-#include <wavtomp3converterthread.h>
+#include "wavtomp3converterthread.h"
+#include "mp3towavconverterthread.h"
 
 const QString AudioConverter::TAG = "AudioConverter";
 
@@ -41,9 +42,17 @@ void AudioConverter::convert(const QStringList &sourceFilePaths, const QString &
 	if (m_converterThread != nullptr)
 		delete m_converterThread;
 
-	WavToMp3ConverterThread::Settings wavToMp3Settings;
-	wavToMp3Settings.bitrate = settings.mp3Bitrate;
-	m_converterThread = new WavToMp3ConverterThread(sourceFilePaths, destDirPath, wavToMp3Settings);
+	if (settings.convertionWay == WAV_TO_MP3) {
+		WavToMp3ConverterThread::Settings wavToMp3Settings;
+		wavToMp3Settings.bitrate = settings.mp3Bitrate;
+		m_converterThread = new WavToMp3ConverterThread(sourceFilePaths, destDirPath, wavToMp3Settings);
+	} else {
+		Mp3ToWavConverterThread::Settings mp3ToWavSettings;
+		mp3ToWavSettings.sampleRate = settings.wavSampleRate;
+		mp3ToWavSettings.bitsPerSameple = settings.wavBitsPerSample;
+		m_converterThread = new Mp3ToWavConverterThread(sourceFilePaths, destDirPath, mp3ToWavSettings);
+	}
+
 	connect(m_converterThread, &ConverterThread::progressChanged, this, &AudioConverter::progressChanged);
 	connect(m_converterThread, &ConverterThread::finished, this, [this]() {
 		changeState(IDLE);

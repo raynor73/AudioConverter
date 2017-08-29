@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>WavSettingsPage</class>
- <widget name="WavSettingsPage" class="QWizardPage">
+ <widget class="QWizardPage" name="WavSettingsPage">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,5 +13,32 @@
   <property name="windowTitle">
    <string>WizardPage</string>
   </property>
+  <property name="title">
+   <string>WAV Settings</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Sampling Rate (Hz)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="sampleRateComboBox"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Bits per sample</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="bitsPerSampleComboBox"/>
+   </item>
+  </layout>
  </widget>
+ <resources/>
+ <connections/>
 </ui>

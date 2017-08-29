@@ -18,6 +18,8 @@ public:
 	{
 		ConvertionWay convertionWay;
 		int mp3Bitrate;
+		int wavSampleRate;
+		int wavBitsPerSample;
 	};
 
 	enum ConvertionResult { SUCCESS, FAILURE };

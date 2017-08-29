@@ -44,6 +44,12 @@ protected:
 	QStringList m_sourceFilePaths;
 	QString m_destDirPath;
 	QList<ConvertionResultInfo> m_convertionResults;
+
+	int m_totalFiles;
+	int m_currentFileIndex;
+	float m_currentFileProgress;
+
+	float calculateProgress();
 };
 
 #endif // CONVERTERTHREAD_H

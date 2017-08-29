@@ -30,7 +30,9 @@ startpage.cpp \
 audioconverter/resampler.cpp \
 audioconverter/soundbuffer.cpp \
     progresspage.cpp \
-    audioconverter/wavtomp3converterthread.cpp
+    audioconverter/wavtomp3converterthread.cpp \
+    audioconverter/mp3towavconverterthread.cpp \
+    audioconverter/converterthread.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
@@ -49,7 +51,8 @@ audioconverter/soundbuffer.h \
     audioconverter/soundbufferparams.h \
     progresspage.h \
     audioconverter/converterthread.h \
-    audioconverter/wavtomp3converterthread.h
+    audioconverter/wavtomp3converterthread.h \
+    audioconverter/mp3towavconverterthread.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \

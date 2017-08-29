@@ -1,26 +1,28 @@
-#include "wavtomp3converterthread.h"
+#include "mp3towavconverterthread.h"
 #include <lame/lame.h>
 #include <QFile>
 #include <QFileInfo>
-#include <wavdecoder.h>
 #include <QDir>
 
-const QString WavToMp3ConverterThread::TAG = "WavToMp3ConverterThread";
+const QString Mp3ToWavConverterThread::TAG = "Mp3ToWavConverterThread";
 
-WavToMp3ConverterThread::WavToMp3ConverterThread(const QStringList &sourceFilePaths, const QString &destDirPath,
+Mp3ToWavConverterThread::Mp3ToWavConverterThread(const QStringList &sourceFilePaths, const QString &destDirPath,
 												 Settings settings, QObject *parent) :
 	ConverterThread(sourceFilePaths, destDirPath, parent),
 	m_settings(settings)
 {}
 
-void WavToMp3ConverterThread::run()
+void Mp3ToWavConverterThread::run()
 {
 	m_totalFiles = m_sourceFilePaths.size();
 	for (m_currentFileIndex = 0; m_currentFileIndex < m_sourceFilePaths.size(); m_currentFileIndex++) {
 		m_currentFileProgress = 0;
 		emit progressChanged(calculateProgress());
 
-		auto lameGlobalFlags = lame_init();
+		m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], FAILURE);
+		emit convertionResultAdded(m_convertionResults.last());
+
+		/*auto lameGlobalFlags = lame_init();
 		lame_set_brate(lameGlobalFlags, m_settings.bitrate);
 		lame_set_quality(lameGlobalFlags, 2);
 		if (lame_init_params(lameGlobalFlags) < 0) {
@@ -77,6 +79,6 @@ interruption_requested:
 		delete wavDecoder;
 		mp3File.close();
 		wavFile.close();
-		lame_close(lameGlobalFlags);
+		lame_close(lameGlobalFlags);*/
 	}
 }
