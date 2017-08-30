@@ -4,7 +4,7 @@ SoundBuffer::SoundBuffer(SoundBufferParams params, QObject *parent) :
 	QObject(parent),
 	m_params(params)
 {
-	m_data = new char[params.resolutionMeasuredInBytes() * params.numberOfChannels() * params.numberOfSamples()];
+	m_data = new unsigned char[params.bitsPerSample / 8 * params.numberOfChannels * params.numberOfSamples];
 }
 
 SoundBuffer::~SoundBuffer()

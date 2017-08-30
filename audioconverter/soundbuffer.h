@@ -13,11 +13,11 @@ public:
 	virtual ~SoundBuffer();
 
 	SoundBufferParams params() const { return m_params; }
-	char *data() { return m_data; }
+	unsigned char *data() { return m_data; }
 
 private:
 	SoundBufferParams m_params;
-	char *m_data;
+	unsigned char *m_data;
 };
 
 #endif // SOUNDBUFFER_H

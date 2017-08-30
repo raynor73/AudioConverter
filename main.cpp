@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
-#ifdef PORTABLE
+/*#ifdef PORTABLE
 	QString filePath = QCoreApplication::applicationDirPath() + QDir::separator() + APPLICATION_NAME + ".ini";
 	QSettings settings(filePath, QSettings::IniFormat);
 #else
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 #endif
 
 	ConverterWizard wizard(settings);
-	wizard.show();
+	wizard.show();*/
 
 	/*QFile riffFile(QDir::homePath() + QDir::separator() + "some.riff");
 	riffFile.open(QFile::ReadWrite);
@@ -58,10 +58,10 @@ int main(int argc, char *argv[])
 	wavFile.open(QFile::ReadWrite);
 
 	const int dataSize = 44;
-	int *data = new int[dataSize];
+	short *data = new short[dataSize];
 	for (int i = 0; i < dataSize; i++) {
 		float a = float(i) * 2.0f * M_PI / float(dataSize);
-		data[i] = int(32000.0f * std::sin(a));
+		data[i] = short(32000.0f * std::sin(a));
 	}
 
 	WavEncoder::Config config;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 	WavEncoder wavEncoder(wavFile, config);
 	wavEncoder.init();
 	for (int i = 0; i < 10000; i++)
-		wavEncoder.encode((char *) data, dataSize);
+		wavEncoder.encode((char *) data, dataSize * sizeof(short));
 	wavEncoder.finish();
 
 	delete[] data;
