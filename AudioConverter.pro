@@ -34,7 +34,8 @@ audioconverter/soundbuffer.cpp \
     audioconverter/mp3towavconverterthread.cpp \
     audioconverter/converterthread.cpp \
     riffwriter/riffwriter.cpp \
-    riffwriter/riffoutput.cpp
+    riffwriter/riffoutput.cpp \
+    wavencoder/wavencoder.cpp
 
 HEADERS  += mainwindow.h \
     converterwizard.h \
@@ -56,7 +57,8 @@ audioconverter/soundbuffer.h \
     audioconverter/wavtomp3converterthread.h \
     audioconverter/mp3towavconverterthread.h \
     riffwriter/riffwriter.h \
-    riffwriter/riffoutput.h
+    riffwriter/riffoutput.h \
+    wavencoder/wavencoder.h
 
 FORMS    += mainwindow.ui \
 startpage.ui \
@@ -70,7 +72,8 @@ TRANSLATIONS += audioconverter.ts
 INCLUDEPATH += riffreader \
 	wavdecoder \
 	audioconverter \
-	riffwriter
+	riffwriter \
+	wavencoder
 
 CONFIG += c++11
 

@@ -2,11 +2,10 @@
 #define WAVFORMAT_H
 
 
-#include <QMetaEnum>
+#include <QtGlobal>
 
-class WavFormat
+struct WavFormat
 {
-public:
 	quint16 code;
 	quint16 numberOfChannels;
 	quint32 sampleRate;

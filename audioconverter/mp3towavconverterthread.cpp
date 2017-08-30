@@ -1,5 +1,6 @@
 #include "mp3towavconverterthread.h"
 #include <lame/lame.h>
+#include <wavencoder.h>
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
@@ -19,8 +20,32 @@ void Mp3ToWavConverterThread::run()
 		m_currentFileProgress = 0;
 		emit progressChanged(calculateProgress());
 
-		m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], FAILURE);
-		emit convertionResultAdded(m_convertionResults.last());
+		/*m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], FAILURE);
+		emit convertionResultAdded(m_convertionResults.last());*/
+
+		WavEncoder::Config config;
+		config.format = WavEncoder::PCM;
+
+		config.numberOfChannels = 1;
+		config.sampleRate = 44100;
+		config.bitsPerSample = 16;
+
+		/*WavEncoder wavEncoder(wavFile, config);
+		wavEncoder.init();
+		for (int i = 0; i < 10000; i++)
+			wavEncoder.encode((char *) data, dataSize);
+		wavEncoder.finish();*/
+
+
+		QFile mp3File(m_sourceFilePaths[m_currentFileIndex]);
+		QFileInfo mp3FileInfo(mp3File);
+		mp3File.open(QFile::ReadOnly);
+
+		auto hipGlobalFlags = hip_decode_init();
+
+
+
+		hip_decode_exit(hipGlobalFlags);
 
 		/*auto lameGlobalFlags = lame_init();
 		lame_set_brate(lameGlobalFlags, m_settings.bitrate);

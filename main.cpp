@@ -10,6 +10,8 @@
 #include "converterwizard.h"
 #include <riffoutput.h>
 #include <riffwriter.h>
+#include <wavencoder.h>
+#include <cmath>
 
 int main(int argc, char *argv[])
 {
@@ -51,6 +53,30 @@ int main(int argc, char *argv[])
 
 	riffWriter.finishChunk();
 	riffFile.close();*/
+
+	/*QFile wavFile(QDir::homePath() + QDir::separator() + "some.wav");
+	wavFile.open(QFile::ReadWrite);
+
+	const int dataSize = 44;
+	int *data = new int[dataSize];
+	for (int i = 0; i < dataSize; i++) {
+		float a = float(i) * 2.0f * M_PI / float(dataSize);
+		data[i] = int(32000.0f * std::sin(a));
+	}
+
+	WavEncoder::Config config;
+	config.format = WavEncoder::PCM;
+	config.numberOfChannels = 1;
+	config.sampleRate = 44100;
+	config.bitsPerSample = 16;
+	WavEncoder wavEncoder(wavFile, config);
+	wavEncoder.init();
+	for (int i = 0; i < 10000; i++)
+		wavEncoder.encode((char *) data, dataSize);
+	wavEncoder.finish();
+
+	delete[] data;
+	wavFile.close();*/
 
 	return app.exec();
 }
