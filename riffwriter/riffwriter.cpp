@@ -75,6 +75,11 @@ bool RiffWriter::finishChunk()
 	}
 
 	quint32 length = m_writtenDataSize;
+	bool hadToWritePaddingByte = false;
+	if (length % 2 != 0) {
+		length++;
+		hadToWritePaddingByte = true;
+	}
 	if (m_output.write((const char *) &length, LENGTH_FIELD_SIZE) < LENGTH_FIELD_SIZE) {
 		qFatal("%s: Error writing chunk length field", qPrintable(TAG));
 		changeState(FAILURE);
@@ -83,6 +88,12 @@ bool RiffWriter::finishChunk()
 
 	if (!m_output.seek(m_tailPosition)) {
 		qFatal("%s: Error seeking back to tail", qPrintable(TAG));
+		changeState(FAILURE);
+		return false;
+	}
+
+	if (hadToWritePaddingByte && m_output.write((const char *) &length, 1) < 1) {
+		qFatal("%s: Error writing padding byte", qPrintable(TAG));
 		changeState(FAILURE);
 		return false;
 	}

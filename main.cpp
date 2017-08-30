@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
-/*#ifdef PORTABLE
+#ifdef PORTABLE
 	QString filePath = QCoreApplication::applicationDirPath() + QDir::separator() + APPLICATION_NAME + ".ini";
 	QSettings settings(filePath, QSettings::IniFormat);
 #else
@@ -33,9 +33,9 @@ int main(int argc, char *argv[])
 #endif
 
 	ConverterWizard wizard(settings);
-	wizard.show();*/
+	wizard.show();
 
-	QFile riffFile(QDir::homePath() + QDir::separator() + "some.riff");
+	/*QFile riffFile(QDir::homePath() + QDir::separator() + "some.riff");
 	riffFile.open(QFile::ReadWrite);
 	RiffOutput fileRiffOutput(&riffFile);
 
@@ -46,11 +46,11 @@ int main(int argc, char *argv[])
 	RiffWriter nestedWriter(riffOutput);
 	nestedWriter.startChunk("DATA");
 	const char *data = "asdfghjkl";
-	riffWriter.writeData(data, qstrlen(data));
+	nestedWriter.writeData(data, qstrlen(data));
 	nestedWriter.finishChunk();
 
 	riffWriter.finishChunk();
-	riffFile.close();
+	riffFile.close();*/
 
 	return app.exec();
 }
