@@ -121,7 +121,4 @@ void Resampler::resample(int numberOfSamples)
 		}
 	}
 	delete[] buffer;
-	/*if (sourceBufferParams.bitsPerSample > destBufferParams.bitsPerSample) {
-	} else {
-	}*/
 }

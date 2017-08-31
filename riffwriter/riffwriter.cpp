@@ -2,7 +2,7 @@
 #include <QMetaEnum>
 #include "riffoutput.h"
 
-const QString RiffWriter::TAG = "TAG";
+const QString RiffWriter::TAG = "RiffWriter";
 const QString RiffWriter::RIFF_CHUNCK_IDENTIFIER = "RIFF";
 const QString RiffWriter::LIST_CHUNK_IDENTIFIER = "LIST";
 

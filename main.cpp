@@ -12,6 +12,7 @@
 #include <riffwriter.h>
 #include <wavencoder.h>
 #include <cmath>
+#include <resampler.h>
 
 int main(int argc, char *argv[])
 {
@@ -77,6 +78,53 @@ int main(int argc, char *argv[])
 
 	delete[] data;
 	wavFile.close();*/
+
+	QFile sourceFile(QDir::homePath() + QDir::separator() + "some.wav");
+	sourceFile.open(QFile::ReadOnly);
+	QFile destFile(QDir::homePath() + QDir::separator() + "some8.wav");
+	destFile.open(QFile::ReadWrite);
+
+	WavDecoder wavDecoder(sourceFile);
+	wavDecoder.init();
+	WavFormat sourceFormat = wavDecoder.format();
+	qDebug() << "Input" << sourceFormat.bitsPerSample << sourceFormat.sampleRate << sourceFormat.numberOfChannels;
+
+	WavEncoder::Config destConfig;
+	destConfig.format = WavEncoder::PCM;
+	destConfig.numberOfChannels = 1;
+	destConfig.sampleRate = 22050;
+	destConfig.bitsPerSample = 8;
+	WavEncoder wavEncoder(destFile, destConfig);
+	wavEncoder.init();
+
+	SoundBufferParams sourceBufferParams = {
+		.sampleRate = sourceFormat.sampleRate,
+		.numberOfChannels = sourceFormat.numberOfChannels,
+		.bitsPerSample = sourceFormat.bitsPerSample,
+		.numberOfSamples = 1000
+	};
+	SoundBufferParams destBufferParams = {
+		.sampleRate = destConfig.sampleRate,
+		.numberOfChannels = destConfig.numberOfChannels,
+		.bitsPerSample = destConfig.bitsPerSample,
+		.numberOfSamples = 1000
+	};
+	Resampler resampler(sourceBufferParams, destBufferParams);
+	const int maxReadSize = sourceBufferParams.numberOfSamples *
+			sourceBufferParams.numberOfChannels *
+			8 /
+			sourceBufferParams.bitsPerSample;
+	int bytesRead = 0;
+	while ((bytesRead = wavDecoder.decode((char *) resampler.sourceBuffer().data(), maxReadSize)) > 0) {
+		resampler.resample(bytesRead / sourceFormat.numberOfChannels * 8 /sourceFormat.bitsPerSample);
+		wavEncoder.encode((char *) resampler.destBuffer().data(),
+						  resampler.destSamplesAvailable() * destConfig.bitsPerSample / 8 * destConfig.numberOfChannels);
+	}
+
+	wavEncoder.finish();
+
+	sourceFile.close();
+	destFile.close();
 
 	return app.exec();
 }

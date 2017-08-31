@@ -2,9 +2,11 @@
 #define SOUNDBUFFERPARAMS_H
 
 
+#include <QtGlobal>
+
 struct SoundBufferParams
 {
-	int sampleRate;
+	quint32 sampleRate;
 	int numberOfChannels;
 	int bitsPerSample;
 	int numberOfSamples;

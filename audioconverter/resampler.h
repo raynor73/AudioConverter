@@ -20,6 +20,9 @@ public:
 	SoundBuffer &sourceBuffer() { return *m_sourceBuffer; }
 	SoundBuffer &destBuffer() { return *m_destBuffer; }
 
+	int sourceSamplesAvailable() const { return m_sourceSamplesAvailabe; }
+	int destSamplesAvailable() const { return m_destSamplesAvailabe; }
+
 private:
 	SoundBuffer *m_sourceBuffer;
 	SoundBuffer *m_destBuffer;
