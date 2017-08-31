@@ -25,7 +25,10 @@ Resampler::~Resampler()
 
 void Resampler::resample(int numberOfSamples)
 {
-	m_samplesAvailabe = numberOfSamples;
+	m_sourceSamplesAvailabe = numberOfSamples;
+	m_destSamplesAvailabe = numberOfSamples * m_resamplingFactor;
+	if (m_destSamplesAvailabe > m_destBuffer->params().numberOfSamples)
+		m_destSamplesAvailabe = m_destBuffer->params().numberOfSamples;
 
 	SoundBufferParams sourceBufferParams = m_sourceBuffer->params();
 	SoundBufferParams destBufferParams = m_destBuffer->params();
@@ -78,6 +81,38 @@ void Resampler::resample(int numberOfSamples)
 					buffer[bufferIndex * 2 + 1] = float(right) / 16777216.0f;
 				}
 			}
+			break;
+		}
+
+		default:
+			throw UnsupportedBitrateException();
+		}
+
+		switch (destBufferParams.bitsPerSample) {
+		case 8: {
+			unsigned char *destBuffer = m_destBuffer->data();
+			for (int i = 0; i < m_destSamplesAvailabe; i++) {
+				if (sourceBufferParams.numberOfChannels == 1 && destBufferParams.numberOfChannels == 1) {
+					destBuffer[i] = (unsigned char) ((buffer[i] + 1.0f) / 2.0f * 255.0f);
+				} else if (sourceBufferParams.numberOfChannels == 1 && destBufferParams.numberOfChannels == 2) {
+					destBuffer[i * 2] = (unsigned char) ((buffer[i] + 1.0f) / 2.0f * 255.0f);
+					destBuffer[i * 2 + 1] = (unsigned char) ((buffer[i] + 1.0f) / 2.0f * 255.0f);
+				} else if (sourceBufferParams.numberOfChannels == 2 && destBufferParams.numberOfChannels == 1) {
+					float value = (buffer[i * 2] + buffer[i * 2 + 1]) / 2.0f;
+					destBuffer[i] = (unsigned char) ((value + 1.0f) / 2.0f * 255.0f);
+				} else {
+					destBuffer[i * 2] = (unsigned char) ((buffer[i * 2] + 1.0f) / 2.0f * 255.0f);
+					destBuffer[i * 2 + 1] = (unsigned char) ((buffer[i * 2 + 1] + 1.0f) / 2.0f * 255.0f);
+				}
+			}
+			break;
+		}
+
+		case 16: {
+			break;
+		}
+
+		case 24: {
 			break;
 		}
 

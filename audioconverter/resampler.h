@@ -23,7 +23,8 @@ public:
 private:
 	SoundBuffer *m_sourceBuffer;
 	SoundBuffer *m_destBuffer;
-	int m_samplesAvailabe;
+	int m_sourceSamplesAvailabe;
+	int m_destSamplesAvailabe;
 	float m_resamplingFactor;
 };
 
