@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 
-/*#ifdef PORTABLE
+#ifdef PORTABLE
 	QString filePath = QCoreApplication::applicationDirPath() + QDir::separator() + APPLICATION_NAME + ".ini";
 	QSettings settings(filePath, QSettings::IniFormat);
 #else
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 #endif
 
 	ConverterWizard wizard(settings);
-	wizard.show();*/
+	wizard.show();
 
 	/*QFile riffFile(QDir::homePath() + QDir::separator() + "some.riff");
 	riffFile.open(QFile::ReadWrite);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	delete[] data;
 	wavFile.close();*/
 
-	QFile sourceFile(QDir::homePath() + QDir::separator() + "some.wav");
+	/*QFile sourceFile(QDir::homePath() + QDir::separator() + "some.wav");
 	sourceFile.open(QFile::ReadOnly);
 	QFile destFile(QDir::homePath() + QDir::separator() + "some8.wav");
 	destFile.open(QFile::ReadWrite);
@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
 	wavEncoder.finish();
 
 	sourceFile.close();
-	destFile.close();
+	destFile.close();*/
 
 	return app.exec();
 }

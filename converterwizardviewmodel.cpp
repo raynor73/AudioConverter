@@ -22,10 +22,10 @@ QList<int> ConverterWizardViewModel::m_wavSampleRateValues = {
 	48000, 47250, 44100, 44056, 37800, 32000, 22050, 16000, 11025, 8000
 };
 QStringList ConverterWizardViewModel::m_wavBitsPerSampleNames = {
-	"24", "16"
+	"24", "16", "8"
 };
 QList<int> ConverterWizardViewModel::m_wavBitsPerSampleValues = {
-	24, 16
+	24, 16, 8
 };
 
 ConverterWizardViewModel::ConverterWizardViewModel(QSettings &settings, QObject *parent) :

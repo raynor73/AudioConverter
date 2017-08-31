@@ -25,6 +25,8 @@ private:
 	static const int BUFFER_SIZE = 102400;
 
 	Settings m_settings;
+
+	void merge(qint16 *interleavedBuffer, qint16 *leftChannelBuffer, qint16 *rightChannleBuffer, int numberOfSamples);
 };
 
 #endif // MP3TOWAVCONVERTERTHREAD_H

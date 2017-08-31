@@ -33,7 +33,14 @@ void WavToMp3ConverterThread::run()
 
 		QFile wavFile(m_sourceFilePaths[m_currentFileIndex]);
 		QFileInfo wavFileInfo(wavFile);
-		wavFile.open(QFile::ReadOnly);
+		if (!wavFile.open(QFile::ReadOnly)) {
+			qCritical("%s: Can't open source WAV file: %s", qPrintable(TAG),
+					  qPrintable(m_sourceFilePaths[m_currentFileIndex]));
+			lame_close(lameGlobalFlags);
+			m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], FAILURE);
+			emit convertionResultAdded(m_convertionResults.last());
+			continue;
+		}
 		WavDecoder *wavDecoder = new WavDecoder(wavFile);
 		if (!wavDecoder->init()) {
 			qInfo("%s: WavDecoder::init failed", qPrintable(TAG));
@@ -48,8 +55,18 @@ void WavToMp3ConverterThread::run()
 		auto mp3BufferSize = int(std::ceil(1.25 * BUFFER_SIZE / wavDecoder->format().dataBlockSize + 7200));
 		auto mp3Buffer = new unsigned char[mp3BufferSize];
 
-		QFile mp3File(m_destDirPath + QDir::separator() + wavFileInfo.baseName() + ".mp3");
-		mp3File.open(QFile::WriteOnly);
+		QString mp3FilePath = m_destDirPath + QDir::separator() + wavFileInfo.baseName() + ".mp3";
+		QFile mp3File(mp3FilePath);
+		if (!mp3File.open(QFile::WriteOnly)) {
+			qCritical("%s: Can't open destination MP3 file: %s", qPrintable(TAG), qPrintable(mp3FilePath));
+			lame_close(lameGlobalFlags);
+			delete[] mp3Buffer;
+			delete wavDecoder;
+			wavFile.close();
+			m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], FAILURE);
+			emit convertionResultAdded(m_convertionResults.last());
+			continue;
+		}
 		int bytesRead = 0;
 		int totalBytesRead = 0;
 		int bytesToWrite = 0;
@@ -64,8 +81,14 @@ void WavToMp3ConverterThread::run()
 			m_currentFileProgress = float(totalBytesRead) / wavFileInfo.size();
 			emit progressChanged(calculateProgress());
 
-			if (isInterruptionRequested())
+			if (isInterruptionRequested()) {
+				delete wavDecoder;
+				delete[] mp3Buffer;
+				mp3File.close();
+				wavFile.close();
+				lame_close(lameGlobalFlags);
 				goto interruption_requested;
+			}
 		}
 		bytesToWrite = lame_encode_flush(lameGlobalFlags, mp3Buffer, mp3BufferSize);
 		mp3File.write((char *) mp3Buffer, bytesToWrite);
@@ -73,10 +96,11 @@ void WavToMp3ConverterThread::run()
 		m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], SUCCESS);
 		emit convertionResultAdded(m_convertionResults.last());
 
-interruption_requested:
 		delete wavDecoder;
+		delete[] mp3Buffer;
 		mp3File.close();
 		wavFile.close();
 		lame_close(lameGlobalFlags);
 	}
+interruption_requested:;
 }
