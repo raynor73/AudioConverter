@@ -40,13 +40,25 @@ void Resampler::resample(int numberOfSamples)
 	switch (sourceBufferParams.bitsPerSample) {
 	case 8: {
 		unsigned char *sourceBuffer = m_sourceBuffer->data();
-		for (int i = 0; i < numberOfSamples; i++) {
-			int bufferIndex = float(i) * m_resamplingFactor;
-			if (sourceBufferParams.numberOfChannels == 1) {
-				buffer[bufferIndex] = (float(sourceBuffer[i]) - 127.0f) / 128.0f;
-			} else {
-				buffer[bufferIndex * 2] = (float(sourceBuffer[i * 2]) - 127.0f) / 128.0f;
-				buffer[bufferIndex * 2 + 1] = (float(sourceBuffer[i * 2 + 1]) - 127.0f) / 128.0f;
+		if (sourceBufferParams.sampleRate >= destBufferParams.sampleRate) {
+			for (int i = 0; i < numberOfSamples; i++) {
+				int bufferIndex = float(i) * m_resamplingFactor;
+				if (sourceBufferParams.numberOfChannels == 1) {
+					buffer[bufferIndex] = (float(sourceBuffer[i]) - 127.0f) / 128.0f;
+				} else {
+					buffer[bufferIndex * 2] = (float(sourceBuffer[i * 2]) - 127.0f) / 128.0f;
+					buffer[bufferIndex * 2 + 1] = (float(sourceBuffer[i * 2 + 1]) - 127.0f) / 128.0f;
+				}
+			}
+		} else {
+			for (int i = 0; i < m_destSamplesAvailabe; i++) {
+				int bufferIndex = float(i) / m_resamplingFactor;
+				if (sourceBufferParams.numberOfChannels == 1) {
+					buffer[i] = (float(sourceBuffer[bufferIndex]) - 127.0f) / 128.0f;
+				} else {
+					buffer[i * 2] = (float(sourceBuffer[bufferIndex * 2]) - 127.0f) / 128.0f;
+					buffer[i * 2 + 1] = (float(sourceBuffer[bufferIndex * 2 + 1]) - 127.0f) / 128.0f;
+				}
 			}
 		}
 		break;
@@ -54,13 +66,25 @@ void Resampler::resample(int numberOfSamples)
 
 	case 16: {
 		qint16 *sourceBuffer = (qint16 *) m_sourceBuffer->data();
-		for (int i = 0; i < numberOfSamples; i++) {
-			int bufferIndex = float(i) * m_resamplingFactor;
-			if (sourceBufferParams.numberOfChannels == 1) {
-				buffer[bufferIndex] = float(sourceBuffer[i]) / 32768.0f;
-			} else {
-				buffer[bufferIndex * 2] = float(sourceBuffer[i * 2]) / 32768.0f;
-				buffer[bufferIndex * 2 + 1] = float(sourceBuffer[i * 2 + 1]) / 32768.0f;
+		if (sourceBufferParams.sampleRate >= destBufferParams.sampleRate) {
+			for (int i = 0; i < numberOfSamples; i++) {
+				int bufferIndex = float(i) * m_resamplingFactor;
+				if (sourceBufferParams.numberOfChannels == 1) {
+					buffer[bufferIndex] = float(sourceBuffer[i]) / 32768.0f;
+				} else {
+					buffer[bufferIndex * 2] = float(sourceBuffer[i * 2]) / 32768.0f;
+					buffer[bufferIndex * 2 + 1] = float(sourceBuffer[i * 2 + 1]) / 32768.0f;
+				}
+			}
+		} else {
+			for (int i = 0; i < m_destSamplesAvailabe; i++) {
+				int bufferIndex = float(i) / m_resamplingFactor;
+				if (sourceBufferParams.numberOfChannels == 1) {
+					buffer[i] = float(sourceBuffer[bufferIndex]) / 32768.0f;
+				} else {
+					buffer[i * 2] = float(sourceBuffer[bufferIndex * 2]) / 32768.0f;
+					buffer[i * 2 + 1] = float(sourceBuffer[bufferIndex * 2 + 1]) / 32768.0f;
+				}
 			}
 		}
 		break;
@@ -68,24 +92,47 @@ void Resampler::resample(int numberOfSamples)
 
 	case 24: {
 		unsigned char *sourceBuffer = m_sourceBuffer->data();
-		for (int i = 0; i < numberOfSamples; i++) {
-			int bufferIndex = float(i) * m_resamplingFactor;
-			if (sourceBufferParams.numberOfChannels == 1) {
-				qint32 value;
-				std::memcpy(&value, sourceBuffer + i * 3, 3);
-				if (value & 0x00800000)
-					value |= 0xff000000;
-				buffer[bufferIndex] = float(value) / 8388608.0f;
-			} else {
-				qint32 left, right;
-				std::memcpy(&left, sourceBuffer + i * 6, 3);
-				std::memcpy(&right, sourceBuffer+ i * 6 + 3, 3);
-				if (left & 0x00800000)
-					left |= 0xff000000;
-				if (right & 0x00800000)
-					right |= 0xff000000;
-				buffer[bufferIndex * 2] = float(left) / 8388608.0f;
-				buffer[bufferIndex * 2 + 1] = float(right) / 8388608.0f;
+		if (sourceBufferParams.sampleRate >= destBufferParams.sampleRate) {
+			for (int i = 0; i < numberOfSamples; i++) {
+				int bufferIndex = float(i) * m_resamplingFactor;
+				if (sourceBufferParams.numberOfChannels == 1) {
+					qint32 value;
+					std::memcpy(&value, sourceBuffer + i * 3, 3);
+					if (value & 0x00800000)
+						value |= 0xff000000;
+					buffer[bufferIndex] = float(value) / 8388608.0f;
+				} else {
+					qint32 left, right;
+					std::memcpy(&left, sourceBuffer + i * 6, 3);
+					std::memcpy(&right, sourceBuffer+ i * 6 + 3, 3);
+					if (left & 0x00800000)
+						left |= 0xff000000;
+					if (right & 0x00800000)
+						right |= 0xff000000;
+					buffer[bufferIndex * 2] = float(left) / 8388608.0f;
+					buffer[bufferIndex * 2 + 1] = float(right) / 8388608.0f;
+				}
+			}
+		} else {
+			for (int i = 0; i < m_destSamplesAvailabe; i++) {
+				int bufferIndex = float(i) / m_resamplingFactor;
+				if (sourceBufferParams.numberOfChannels == 1) {
+					qint32 value;
+					std::memcpy(&value, sourceBuffer + bufferIndex * 3, 3);
+					if (value & 0x00800000)
+						value |= 0xff000000;
+					buffer[i] = float(value) / 8388608.0f;
+				} else {
+					qint32 left, right;
+					std::memcpy(&left, sourceBuffer + bufferIndex * 6, 3);
+					std::memcpy(&right, sourceBuffer+ bufferIndex * 6 + 3, 3);
+					if (left & 0x00800000)
+						left |= 0xff000000;
+					if (right & 0x00800000)
+						right |= 0xff000000;
+					buffer[i * 2] = float(left) / 8388608.0f;
+					buffer[i * 2 + 1] = float(right) / 8388608.0f;
+				}
 			}
 		}
 		break;
