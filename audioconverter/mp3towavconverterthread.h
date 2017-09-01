@@ -2,6 +2,7 @@
 #define MP3TOWAVCONVERTERTHREAD_H
 
 #include "converterthread.h"
+#include <QException>
 
 class Mp3ToWavConverterThread : public ConverterThread
 {
@@ -13,6 +14,8 @@ public:
 		int sampleRate;
 		int bitsPerSameple;
 	};
+
+	class OutOfMemoryException : QException {};
 
 	Mp3ToWavConverterThread(const QStringList &sourceFilePaths, const QString &destDirPath, Settings settings,
 							QObject *parent = 0);

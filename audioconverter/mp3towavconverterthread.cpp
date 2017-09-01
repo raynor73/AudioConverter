@@ -25,6 +25,9 @@ void Mp3ToWavConverterThread::run()
 	short *left = new short[pcmBufferSize];
 	short *right = new short[pcmBufferSize];
 
+	if (buffer == nullptr || left == nullptr || right == nullptr)
+		throw OutOfMemoryException();
+
 	for (m_currentFileIndex = 0; m_currentFileIndex < m_sourceFilePaths.size(); m_currentFileIndex++) {
 		m_currentFileProgress = 0;
 		emit progressChanged(calculateProgress());
@@ -74,6 +77,20 @@ void Mp3ToWavConverterThread::run()
 			continue;
 		}
 
+		//// Debug {
+		QFile dbgWavFile(QDir::homePath() + QDir::separator() + "dbg.wav");
+		dbgWavFile.open(QFile::ReadWrite);
+		WavEncoder::Config dbgWavConfig;
+		dbgWavConfig.format = WavEncoder::PCM;
+		dbgWavConfig.sampleRate = mp3Config.samplerate;
+		dbgWavConfig.bitsPerSample = 16;
+		dbgWavConfig.numberOfChannels = 1;
+		WavEncoder dbgWavEncoder(dbgWavFile, dbgWavConfig);
+		dbgWavEncoder.init();
+		dbgWavEncoder.encode((char *) left,
+							 samplesRead * dbgWavConfig.numberOfChannels * dbgWavConfig.bitsPerSample / 8);
+		//// } Debug
+
 		QString wavFilePath = m_destDirPath + QDir::separator() + mp3FileInfo.baseName() + ".wav";
 		QFile wavFile(wavFilePath);
 		if (!wavFile.open(QFile::ReadWrite)) {
@@ -109,16 +126,14 @@ void Mp3ToWavConverterThread::run()
 		};
 		Resampler resampler(sourceBufferParams, destBufferParams);
 		const int bufferSize = BUFFER_SIZE;
-		const int maxReadSize = std::min(sourceBufferParams.numberOfSamples *
-				sourceBufferParams.numberOfChannels *
-				8 /
-				sourceBufferParams.bitsPerSample, bufferSize);
+		const int maxReadSize = std::min(sourceBufferParams.numberOfSamples * sourceBufferParams.numberOfChannels * 8 /
+										 sourceBufferParams.bitsPerSample, bufferSize);
 
 		merge((qint16 *) resampler.sourceBuffer().data(), left, right, samplesRead);
 
 		resampler.resample(samplesRead);
-		quint32 bytesToEncode = resampler.destSamplesAvailable() * destBufferParams.numberOfChannels * 8 /
-				destBufferParams.bitsPerSample;
+		quint32 bytesToEncode = resampler.destSamplesAvailable() * destBufferParams.numberOfChannels *
+				destBufferParams.bitsPerSample / 8;
 		if (wavEncoder.encode((char *) resampler.destBuffer().data(), bytesToEncode) < bytesToEncode) {
 			qCritical("%s: Failed to encode WAV", qPrintable(TAG));
 			hip_decode_exit(hipGlobalFlags);
@@ -129,16 +144,20 @@ void Mp3ToWavConverterThread::run()
 			continue;
 		}
 
+		qint64 totalBytesRead = 0;
 		while ((bytesRead = mp3File.read(buffer, maxReadSize)) > 0) {
 			samplesRead = hip_decode(hipGlobalFlags, (unsigned char *) buffer, bytesRead, left, right);
 			if (samplesRead > 0) {
+				dbgWavEncoder.encode((char *) left,
+									 samplesRead * dbgWavConfig.numberOfChannels * dbgWavConfig.bitsPerSample / 8);
+
 				merge((qint16 *) resampler.sourceBuffer().data(), left, right, samplesRead);
 
 				resampler.resample(samplesRead);
 
 				SoundBufferParams destBufferParams = resampler.destBuffer().params();
-				quint32 bytesToEncode = resampler.destSamplesAvailable() * destBufferParams.numberOfChannels * 8 /
-						destBufferParams.bitsPerSample;
+				quint32 bytesToEncode = resampler.destSamplesAvailable() * destBufferParams.numberOfChannels *
+						destBufferParams.bitsPerSample / 8;
 				if (wavEncoder.encode((char *) resampler.destBuffer().data(), bytesToEncode) < bytesToEncode) {
 					qCritical("%s: Failed to encode WAV", qPrintable(TAG));
 					hip_decode_exit(hipGlobalFlags);
@@ -150,6 +169,10 @@ void Mp3ToWavConverterThread::run()
 				}
 			}
 
+			totalBytesRead += bytesRead;
+			m_currentFileProgress = float(totalBytesRead) / mp3FileInfo.size();
+			emit progressChanged(calculateProgress());
+
 			if (isInterruptionRequested()) {
 				hip_decode_exit(hipGlobalFlags);
 				mp3File.close();
@@ -157,6 +180,9 @@ void Mp3ToWavConverterThread::run()
 				goto interruption_requested;
 			}
 		}
+
+		dbgWavEncoder.finish();
+		dbgWavFile.close();
 
 		m_convertionResults += ConvertionResultInfo(m_sourceFilePaths[m_currentFileIndex], SUCCESS);
 		emit convertionResultAdded(m_convertionResults.last());
