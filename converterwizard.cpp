@@ -42,6 +42,7 @@ ConverterWizard::ConverterWizard(QSettings &settings, QWidget *parent) :
 #endif
 
 	setWindowTitle(tr("Converter Wizard"));
+	setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
 	readSettings();
 
